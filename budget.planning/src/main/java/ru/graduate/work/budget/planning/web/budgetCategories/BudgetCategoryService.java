@@ -20,6 +20,13 @@ public class BudgetCategoryService {
 
     public List<BudgetCategory> listCategories() {return categories;}
 
+    public BudgetCategory getCategoryById(Long id) {
+        for (BudgetCategory category: categories) {
+            if (category.getId().equals(id)) return category;
+        }
+        return null;
+    }
+
     public void saveBudgetCategory(BudgetCategory budgetCategory) {
         budgetCategory.setId(++id);
         categories.add(budgetCategory);
@@ -29,10 +36,10 @@ public class BudgetCategoryService {
         categories.removeIf(category -> category.getId().equals(id));
     }
 
-    public BudgetCategory getCategoryById(Long id) {
-        for (BudgetCategory category: categories) {
-            if (category.getId().equals(id)) return category;
-        }
-        return null;
+    public void editBudgetCategory(Long id, BudgetCategory editedBudgetCategory) {
+        BudgetCategory category = this.getCategoryById(id);
+        category.setTitle(editedBudgetCategory.getTitle());
+        category.setDescription(editedBudgetCategory.getDescription());
     }
+
 }

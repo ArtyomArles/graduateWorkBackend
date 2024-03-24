@@ -6,7 +6,7 @@
 >
 <head>
     <meta charset="UTF-8">
-    <title>Категория</title>
+    <title>Категория бюджета</title>
 </head>
 <body>
 <a href="/categories" id="categories">Назад</a>
@@ -20,6 +20,12 @@
 <form action="/categories/delete/${category.id}" method="post">
     <input type="submit" value="Удалить">
 </form>
-
+<hr>
+<h2>Редактирование категории бюджета</h2>
+<form action="/categories/edit/${category.id}" method="post">
+    Название категории: <input type="text" name="title" value="${category.title}"><br><br>
+    Описание категории: <input type="text" name="description" value="${category.description}"><br><br>
+    <input type="submit" value="Изменить">
+</form>
 </body>
 </html>

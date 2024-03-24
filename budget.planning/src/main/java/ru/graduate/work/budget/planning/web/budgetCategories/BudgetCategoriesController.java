@@ -35,4 +35,10 @@ public class BudgetCategoriesController {
         categoryService.deleteBudgetCategory(id);
         return "redirect:/categories";
     }
+
+    @PostMapping("/categories/edit/{id}")
+    public String editCategory(@PathVariable Long id, BudgetCategory category) {
+        categoryService.editBudgetCategory(id, category);
+        return "redirect:/categories/{id}";
+    }
 }
