@@ -39,7 +39,7 @@
                 </#if>
             </#list>
         </select><br><br>
-        Сумма: <input type="number" name="sum" min="0" id="sum"><br><br>
+        Сумма: <input type="number" name="sum" id="sum"><br><br>
         Тип транзакции:
         <select name="transactionType">
             <option value="${currentTransactionType.id}">${currentTransactionType.title}</option>
