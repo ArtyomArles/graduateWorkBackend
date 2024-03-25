@@ -31,7 +31,10 @@ public class TransactionController {
     @GetMapping("/transactions/{id}")
     public String transactionInfo(@PathVariable Long id, Model model) {
         Transaction transaction = transactionService.getTransactionById(id);
+        String[] transactionDateToSplit = transaction.getTransactionDate().toString().split("-");
+        String dateToString = transactionDateToSplit[0] + "-" + transactionDateToSplit[1] + "-" + transactionDateToSplit[2];
         model.addAttribute("transaction", transaction);
+        model.addAttribute("transactionDate", dateToString);
         model.addAttribute("transactionTypes", transactionTypeService.listTransactionTypes(""));
         model.addAttribute("currentTransactionType", transactionTypeService.getTransactionTypeById(transaction.getTransactionType()));
         model.addAttribute("categories", categoryService.listCategories(""));
