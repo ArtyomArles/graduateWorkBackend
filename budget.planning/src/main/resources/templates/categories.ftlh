@@ -8,6 +8,10 @@
 <a href="/" id="home">Назад</a>
 <h2>Категории бюджета</h2>
 <hr>
+<form action="/categories" method="get">
+    Поиск по названию категории: <input type="text" name="title"><br>
+    <input type="submit" value="Поиск">
+</form>
 <#list categories as category>
 <div>
     <b>
@@ -18,6 +22,8 @@
         </a>
     </b>
 </div>
+<#else>
+    <h3>Категорий бюджета нет</h3>
 </#list>
 
 <hr>

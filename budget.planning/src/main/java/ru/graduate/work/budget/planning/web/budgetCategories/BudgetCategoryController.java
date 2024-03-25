@@ -6,15 +6,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-public class BudgetCategoriesController {
+public class BudgetCategoryController {
     private final BudgetCategoryService categoryService;
 
     @GetMapping("/categories")
-    public String categories(Model model) {
-        model.addAttribute("categories", categoryService.listCategories());
+    public String categories(@RequestParam(name = "title", required = false) String title, Model model) {
+        model.addAttribute("categories", categoryService.listCategories(title));
         return "categories";
     }
 
@@ -26,6 +27,7 @@ public class BudgetCategoriesController {
 
     @PostMapping("/categories/create")
     public String createCategory(BudgetCategory category) {
+//        category.setId(100L);
         categoryService.saveBudgetCategory(category);
         return "redirect:/categories";
     }
