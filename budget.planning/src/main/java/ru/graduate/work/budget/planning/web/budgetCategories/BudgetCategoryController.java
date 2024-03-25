@@ -27,7 +27,6 @@ public class BudgetCategoryController {
 
     @PostMapping("/categories/create")
     public String createCategory(BudgetCategory category) {
-//        category.setId(100L);
         categoryService.saveBudgetCategory(category);
         return "redirect:/categories";
     }

@@ -5,7 +5,7 @@
     <title>Категории бюджета</title>
 </head>
 <body>
-<a href="/" id="home">Назад</a>
+<a href="/" id="back">Назад</a>
 <h2>Категории бюджета</h2>
 <hr>
 <form action="/categories" method="get">
