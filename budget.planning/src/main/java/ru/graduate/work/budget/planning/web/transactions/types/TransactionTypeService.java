@@ -23,7 +23,6 @@ public class TransactionTypeService {
     }
 
     public void saveTransactionType(TransactionType transactionType) {
-        log.info("Saving new {}", transactionType);
         transactionTypeRepository.save(transactionType);
     }
 

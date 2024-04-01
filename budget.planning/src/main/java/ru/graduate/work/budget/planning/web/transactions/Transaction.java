@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
@@ -29,11 +30,14 @@ public class Transaction {
     private String description;
 
     @Column(name = "sum")
-    private Long sum;
+    private BigDecimal sum;
 
     @Column(name = "transaction_type")
     private Long transactionType;
 
     @Column(name = "transaction_date")
     private Date transactionDate;
+
+    @Column(name = "year")
+    private int year;
 }

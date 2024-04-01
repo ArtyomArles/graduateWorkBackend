@@ -23,7 +23,6 @@ public class BudgetCategoryService {
     }
 
     public void saveBudgetCategory(BudgetCategory budgetCategory) {
-        log.info("Saving new {}", budgetCategory);
         categoryRepository.save(budgetCategory);
     }
 

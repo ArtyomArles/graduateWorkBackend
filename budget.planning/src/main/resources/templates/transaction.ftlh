@@ -39,7 +39,7 @@
                 </#if>
             </#list>
         </select><br><br>
-        Сумма: <input type="number" name="sum" id="sum"><br><br>
+        Сумма: <input type="number" name="sum" id="sum" step="any"><br><br>
         Тип транзакции:
         <select name="transactionType">
             <option value="${currentTransactionType.id}">${currentTransactionType.title}</option>
@@ -56,6 +56,6 @@
 <script>
     const sum = "${transaction.sum}"
     const inputSum = document.getElementById("sum")
-    inputSum.value = parseInt(sum.replace(/\s/g, ''))
+    inputSum.value = parseFloat(sum.replace(/\s/g, '').replace(/,/g, '.'))
 </script>
 </html>

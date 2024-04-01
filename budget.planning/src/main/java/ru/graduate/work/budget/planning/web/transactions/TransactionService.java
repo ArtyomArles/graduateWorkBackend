@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +24,7 @@ public class TransactionService {
     }
 
     public void saveTransaction(Transaction transaction) {
-        log.info("Saving new {}", transaction);
+        transaction.setYear(transaction.getTransactionDate().getYear() + 1900);
         transactionRepository.save(transaction);
     }
 
@@ -41,5 +42,12 @@ public class TransactionService {
         transaction.setTransactionType(editedTransaction.getTransactionType());
         transaction.setTransactionDate(editedTransaction.getTransactionDate());
         this.saveTransaction(transaction);
+    }
+
+    public List<Long> getTransactionsByYear(int year) {
+        List<Long> ids = new ArrayList<>();
+        List<Transaction> transactions = transactionRepository.findByYear(year);
+        transactions.forEach(transaction -> ids.add(transaction.getId()));
+        return ids;
     }
 }
