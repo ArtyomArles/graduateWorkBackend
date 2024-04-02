@@ -12,15 +12,12 @@
 <span>${budget.year}</span><br>
 <b><span>Транзакции:</span></b><br>
 <#list transactions as transaction>
-<div>
-    <b>
-        <a href="/transactions/${transaction.id}">
-                ${transaction.title}
-        </a>
-    </b>
-</div>
+<div style="padding: 5px; margin: auto 0 5px 20px; border:1px solid black; display: inline-block;">
+    <b>Название транзакции:</b> <a href="/transactions/${transaction.id}">${transaction.title}</a><br>
+    <b>Сумма транзакции: </b>${transaction.sum}<br>
+</div><br>
 <#else>
-<b>Транзакций нет</b><br>
+<b style="margin-left:20px;">Транзакций нет</b><br>
 </#list>
 <b><span>Сумма бюджета:</span></b>
 <span>${budget.sum}</span><br>

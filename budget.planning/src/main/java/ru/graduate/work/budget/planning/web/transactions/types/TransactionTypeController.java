@@ -1,6 +1,8 @@
 package ru.graduate.work.budget.planning.web.transactions.types;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,15 +10,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class TransactionTypeController {
     private final TransactionTypeService transactionTypeService;
 
     @GetMapping("/transaction-types")
-    public String transactionTypes(@RequestParam(name = "title", required = false) String title, Model model) {
-        model.addAttribute("transactionTypes", transactionTypeService.listTransactionTypes(title));
+    public String transactionTypes() {
         return "transaction-types";
+    }
+    @GetMapping("/transaction-types/search")
+    public ResponseEntity<List<TransactionType>> transactionTypesSearch(@RequestParam(name = "title", required = false) String title) {
+        final List<TransactionType> transactionTypes = transactionTypeService.listTransactionTypes((title));
+        return transactionTypes != null && !transactionTypes.isEmpty()
+                ? new ResponseEntity<>(transactionTypes, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
     @GetMapping("/transaction-types/{id}")

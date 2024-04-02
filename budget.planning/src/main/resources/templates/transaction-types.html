@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Типы транзакций</title>
+</head>
+<body>
+<a href="/" id="back">Назад</a>
+<h2>Типы транзакций</h2>
+<hr>
+    Поиск по названию транзакции: <input type="text" id="title" name="title"><br>
+    <input type="button" onclick="getTransactionTypes()" value="Поиск">
+<div id="transactions"></div>
+<hr>
+<h2>Создание нового типа транзакции</h2>
+<form action="/transaction-types/create" method="post">
+    Название типа транзакции: <input type="text" name="title"/><br><br>
+    <input type="submit" value="Добавить тип транзакции">
+</form>
+</body>
+<script>
+    async function getTransactionTypes() {
+        const url = "http://localhost:8080/transaction-types/search"
+        const title = document.getElementById('title').value
+        const response = await fetch(title ? url+'?title='+title : url)
+        let transactionTypes = []
+
+        if (response.ok)
+            transactionTypes = await response.json()
+        else
+            alert(`Ошибка HTTP:${response.status}`)
+
+        const div = document.getElementById("transactions")
+        if (!!transactionTypes.length) {
+            div.innerHTML = ''
+            transactionTypes.forEach((transaction) => {
+                div.innerHTML += `<b><a href="/transaction-types/${transaction.id}"><p>${transaction.title}</p></a></b>`
+            })
+        } else {
+          div.innerHTML = '<h3>Типов транзакций нет</h3>'
+        }
+    }
+    getTransactionTypes()
+</script>
+</html>
