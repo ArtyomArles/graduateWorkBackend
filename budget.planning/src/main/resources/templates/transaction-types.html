@@ -8,15 +8,13 @@
 <a href="/" id="back">Назад</a>
 <h2>Типы транзакций</h2>
 <hr>
-    Поиск по названию транзакции: <input type="text" id="title" name="title"><br>
-    <input type="button" onclick="getTransactionTypes()" value="Поиск">
+Поиск по названию транзакции: <input type="text" id="title" name="title"><br>
+<input type="button" onclick="getTransactionTypes()" value="Поиск">
 <div id="transactions"></div>
 <hr>
 <h2>Создание нового типа транзакции</h2>
-<form action="/transaction-types/create" method="post">
-    Название типа транзакции: <input type="text" name="title"/><br><br>
-    <input type="submit" value="Добавить тип транзакции">
-</form>
+Название типа транзакции: <input type="text" id="newTitle" name="title"/><br><br>
+<input type="button" onclick="createNewTransactionType()" value="Добавить тип транзакции">
 </body>
 <script>
     async function getTransactionTypes() {
@@ -39,6 +37,24 @@
         } else {
           div.innerHTML = '<h3>Типов транзакций нет</h3>'
         }
+    }
+
+    async function createNewTransactionType() {
+      const url = "http://localhost:8080/transaction-types/create"
+      const responseBody = {
+        title: document.getElementById('newTitle').value
+      }
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(responseBody),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      })
+      if (response.ok)
+        getTransactionTypes()
+      else
+        alert('Что-то пошло не так....')
     }
     getTransactionTypes()
 </script>
