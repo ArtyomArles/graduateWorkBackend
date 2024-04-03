@@ -1,62 +1,58 @@
 package ru.graduate.work.budget.planning.web.transactions;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategoryService;
-import ru.graduate.work.budget.planning.web.transactions.types.TransactionTypeService;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class TransactionController {
     private final TransactionService transactionService;
-    private final BudgetCategoryService categoryService;
-    private final TransactionTypeService transactionTypeService;
-
     @GetMapping("/transactions")
-    public String transactions(@RequestParam(name = "title", required = false) String title, Model model) {
-        model.addAttribute("transactions", transactionService.listTransactions(title));
-        model.addAttribute("transactionTypes", transactionTypeService.listTransactionTypes(""));
-        model.addAttribute("categories", categoryService.listCategories(""));
+    public String transactions() {
         return "transactions";
+    }
+    @GetMapping("/transactions/search")
+    public ResponseEntity<List<Transaction>> transactionsSearch(@RequestParam(name = "title", required = false) String title) {
+        final List<Transaction> transactions = transactionService.listTransactions(title);
+        return transactions != null && !transactions.isEmpty()
+                ? new ResponseEntity<>(transactions, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
     @GetMapping("/transactions/{id}")
-    public String transactionInfo(@PathVariable Long id, Model model) {
-        Transaction transaction = transactionService.getTransactionById(id);
-        String[] transactionDateToSplit = transaction.getTransactionDate().toString().split("-");
-        String dateToString = transactionDateToSplit[0] + "-" + transactionDateToSplit[1] + "-" + transactionDateToSplit[2];
-        model.addAttribute("transaction", transaction);
-        model.addAttribute("transactionDate", dateToString);
-        model.addAttribute("transactionTypes", transactionTypeService.listTransactionTypes(""));
-        model.addAttribute("currentTransactionType", transactionTypeService.getTransactionTypeById(transaction.getTransactionType()));
-        model.addAttribute("categories", categoryService.listCategories(""));
-        model.addAttribute("currentCategory", categoryService.getCategoryById(transaction.getCategoryId()));
+    public String transaction(@PathVariable Long id) {
         return "transaction";
     }
 
+    @GetMapping("/transactions/search/{id}")
+    public ResponseEntity<Transaction> transactionInfo(@PathVariable Long id) {
+        Transaction transaction = transactionService.getTransactionById(id);
+        return transaction != null
+                ? new ResponseEntity<>(transaction, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/transactions/create")
-    public String createTransaction(Transaction transaction) {
+    public ResponseEntity<?> createTransaction(@RequestBody Transaction transaction) {
         transactionService.saveTransaction(transaction);
-        return "redirect:/transactions";
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/transactions/delete/{id}")
-    public String deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
-        return "redirect:/transactions";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/transactions/edit/{id}")
-    public String editTransaction(@PathVariable Long id, Transaction transaction) {
+    public ResponseEntity<?> editTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         transactionService.editTransaction(id, transaction);
-        return "redirect:/transactions/{id}";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

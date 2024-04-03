@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Транзакции</title>
+</head>
+<body>
+<a href="/" id="back">Назад</a>
+<h2>Транзакции</h2>
+<hr>
+    Поиск по названию транзакции: <input type="text" id="title"><br>
+    <input type="button" onclick="getTransactions()" value="Поиск">
+</form>
+<div id="transactions"></div>
+<hr>
+<h2>Создание новой транзакции</h2>
+    Название транзакции: <input type="text" id="newTitle"/><br><br>
+    Описание транзакции: <input type="text" id="newDescription"><br><br>
+    Категория транзакции:
+    <select id="newCategoryId"></select><br><br>
+    Сумма: <input type="number" min="0" id="newSum"><br><br>
+    Тип транзакции:
+    <select id="newTransactionType"></select><br><br>
+    Дата транзакции: <input type="date" id="newTransactionDate"><br><br>
+    <input type="button" onclick="createNewTransaction()" value="Создать транзакцию">
+</body>
+<script>
+    async function getTransactions() {
+      const url = "http://localhost:8080/transactions/search"
+      const title = document.getElementById('title').value
+      const response = await fetch(title ? url+'?title='+title : url)
+      let transactions = []
+
+      if (response.ok)
+          transactions = await response.json()
+      else
+          alert(`Ошибка HTTP:${response.status}`)
+
+      const div = document.getElementById("transactions")
+      if (!!transactions.length) {
+          div.innerHTML = ''
+          transactions.forEach((transaction) => {
+              div.innerHTML += `<b><a href="/transactions/${transaction.id}"><p>${transaction.title}</p></a></b>`
+          })
+      } else {
+        div.innerHTML = '<h3>Транзакций нет</h3>'
+      }
+    }
+
+    async function createNewTransaction() {
+      const url = "http://localhost:8080/transactions/create"
+      const responseBody = {
+        title: document.getElementById('newTitle').value,
+        description: document.getElementById('newDescription').value,
+        categoryId: document.getElementById('newCategoryId').value,
+        sum: document.getElementById('newSum').value,
+        transactionType: document.getElementById('newTransactionType').value,
+        transactionDate: document.getElementById('newTransactionDate').value
+      }
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(responseBody),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      })
+      if (response.ok)
+        getTransactions()
+      else
+        alert('Что-то пошло не так....')
+    }
+
+    async function getCategories() {
+      const url = "http://localhost:8080/categories/search"
+      const response = await fetch(url)
+      let categories = []
+
+      if (response.ok)
+      categories = await response.json()
+      else
+          alert(`Ошибка HTTP:${response.status}`)
+
+      const select = document.getElementById("newCategoryId")
+      select.innerHTML = ''
+      categories.forEach((category) => {
+        select.innerHTML += `<option value="${category.id}">${category.title}</option>`
+      })
+    }
+
+    async function getTransactionTypes() {
+      const url = "http://localhost:8080/transaction-types/search"
+      const response = await fetch(url)
+      let transactionTypes = []
+
+      if (response.ok)
+        transactionTypes = await response.json()
+      else
+          alert(`Ошибка HTTP:${response.status}`)
+
+      const select = document.getElementById("newTransactionType")
+      select.innerHTML = ''
+      transactionTypes.forEach((transactionType) => {
+        select.innerHTML += `<option value="${transactionType.id}">${transactionType.title}</option>`
+      })
+    }
+
+    getTransactions()
+    getCategories()
+    getTransactionTypes()
+</script>
+</html>

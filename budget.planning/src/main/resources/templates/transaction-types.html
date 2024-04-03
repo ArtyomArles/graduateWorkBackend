@@ -10,11 +10,11 @@
 <hr>
 Поиск по названию транзакции: <input type="text" id="title" name="title"><br>
 <input type="button" onclick="getTransactionTypes()" value="Поиск">
-<div id="transactions"></div>
+<div id="transactionTypes"></div>
 <hr>
 <h2>Создание нового типа транзакции</h2>
 Название типа транзакции: <input type="text" id="newTitle" name="title"/><br><br>
-<input type="button" onclick="createNewTransactionType()" value="Добавить тип транзакции">
+<input type="button" onclick="createNewTransactionType()" value="Создать тип транзакции">
 </body>
 <script>
     async function getTransactionTypes() {
@@ -28,11 +28,11 @@
         else
             alert(`Ошибка HTTP:${response.status}`)
 
-        const div = document.getElementById("transactions")
+        const div = document.getElementById("transactionTypes")
         if (!!transactionTypes.length) {
             div.innerHTML = ''
-            transactionTypes.forEach((transaction) => {
-                div.innerHTML += `<b><a href="/transaction-types/${transaction.id}"><p>${transaction.title}</p></a></b>`
+            transactionTypes.forEach((transactionType) => {
+                div.innerHTML += `<b><a href="/transaction-types/${transactionType.id}"><p>${transactionType.title}</p></a></b>`
             })
         } else {
           div.innerHTML = '<h3>Типов транзакций нет</h3>'
@@ -56,6 +56,7 @@
       else
         alert('Что-то пошло не так....')
     }
+    
     getTransactionTypes()
 </script>
 </html>

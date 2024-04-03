@@ -1,12 +1,14 @@
 package ru.graduate.work.budget.planning.web.budgetCategories;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,32 +16,46 @@ public class BudgetCategoryController {
     private final BudgetCategoryService categoryService;
 
     @GetMapping("/categories")
-    public String categories(@RequestParam(name = "title", required = false) String title, Model model) {
-        model.addAttribute("categories", categoryService.listCategories(title));
+    public String categories() {
         return "categories";
     }
 
+    @GetMapping("/categories/search")
+    public ResponseEntity<List<BudgetCategory>> categoriesSearch(@RequestParam(name = "title", required = false) String title, Model model) {
+        List<BudgetCategory> categories = categoryService.listCategories(title);
+        return categories != null && !categories.isEmpty()
+                ? new ResponseEntity<>(categories, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+    }
+
     @GetMapping("/categories/{id}")
-    public String categoryInfo(@PathVariable Long id, Model model) {
-        model.addAttribute("category", categoryService.getCategoryById(id));
+    public String category(@PathVariable Long id) {
         return "category";
     }
 
+    @GetMapping("/categories/search/{id}")
+    public ResponseEntity<BudgetCategory> categoryInfo(@PathVariable Long id) {
+        BudgetCategory budgetCategory = categoryService.getCategoryById(id);
+        return budgetCategory != null
+                ? new ResponseEntity<>(budgetCategory, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/categories/create")
-    public String createCategory(BudgetCategory category) {
+    public ResponseEntity<?> createCategory(@RequestBody BudgetCategory category) {
         categoryService.saveBudgetCategory(category);
-        return "redirect:/categories";
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/categories/delete/{id}")
-    public String deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         categoryService.deleteBudgetCategory(id);
-        return "redirect:/categories";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/categories/edit/{id}")
-    public String editCategory(@PathVariable Long id, BudgetCategory category) {
+    public ResponseEntity<?> editCategory(@PathVariable Long id, @RequestBody BudgetCategory category) {
         categoryService.editBudgetCategory(id, category);
-        return "redirect:/categories/{id}";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
