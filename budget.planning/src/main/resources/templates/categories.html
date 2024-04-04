@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Категории бюджета</title>
+</head>
+<body>
+<a href="/" id="back">Назад</a>
+<h2>Категории бюджета</h2>
+<hr>
+    Поиск по названию категории: <input type="text" id="title"><br>
+    <input type="button" onclick="getCategories()" value="Поиск">
+<div id="categories"></div>
+
+<hr>
+<h2>Создание новой категории бюджета</h2>
+    Название категории: <input type="text" id="newTitle"/><br><br>
+    Описание категории: <input type="text" id="newDescription"><br><br>
+    <input type="button" onclick="createNewCategory()" value="Создать категорию бюджета">
+</body>
+<script>
+    async function getCategories() {
+      const url = "http://localhost:8080/categories/search"
+      const title = document.getElementById('title').value
+      const response = await fetch(title ? url+'?title='+title : url)
+      let categories = []
+
+      if (response.ok)
+      categories = await response.json()
+      else
+          alert(`Ошибка HTTP:${response.status}`)
+
+      const div = document.getElementById("categories")
+      if (!!categories.length) {
+          div.innerHTML = ''
+          categories.forEach((category) => {
+              div.innerHTML += `<b><a href="/categories/${category.id}"><p>${category.title}</p></a></b>`
+          })
+      } else {
+        div.innerHTML = '<h3>Категорий бюджета нет</h3>'
+      }
+    }
+
+    async function createNewCategory() {
+      const url = "http://localhost:8080/categories/create"
+      const responseBody = {
+        title: document.getElementById('newTitle').value,
+        description: document.getElementById('newDescription').value
+      }
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(responseBody),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      })
+      if (response.ok)
+        getCategories()
+      else
+        alert('Что-то пошло не так....')
+    }
+
+    getCategories()
+</script>
+</html>

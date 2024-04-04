@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Транзакция</title>
+</head>
+<body>
+    <a href="/transactions" id="back">Назад</a>
+        <h2>Транзакция</h2>
+    <hr>
+    <b><span>Название:</span></b>
+    <span id="title"></span><br>
+    <b><span>Описание:</span></b>
+    <span id="description"></span><br>
+    <b><span>Категория транзакции:</span></b>
+    <span id="currentCategoryTitle"></span><br>
+    <b><span>Сумма:</span></b>
+    <span id="sum"></span><br>
+    <b><span>Тип транзакции:</span></b>
+    <span id="currentTransactionTypeTitle"></span><br>
+    <b><span>Дата транзакции:</span></b>
+    <span id="transactionDate"></span><br>
+
+    <input type="button" onclick="deleteTransaction()" value="Удалить">
+    <hr>
+    <h2>Редактирование транзакции</h2>
+        Название транзакции: <input type="text" id="newTitle" /><br><br>
+        Описание транзакции: <input type="text" id="newDescription"><br><br>
+        Категория транзакции:
+        <select id="categories">
+        </select><br><br>
+        Сумма: <input type="number" name="sum" id="newSum" step="any"><br><br>
+        Тип транзакции:
+        <select id="transactionTypes"></select><br><br>
+        Дата транзакции: <input type="date" name="transactionDate" id="newTransactionDate"><br><br>
+        <input type="button" onclick="editTransaction()" value="Изменить">
+</body>
+<script>
+    const href = window.location.href
+    const index = href.lastIndexOf('/')
+    const id = href.substring(index + 1, href.length)
+
+    async function getTransaction() {
+
+      const url = `http://localhost:8080/transactions/search/${id}`
+      const response = await fetch(url)
+      let transaction = {}
+
+      if (response.ok) {
+        transaction = await response.json()
+
+        const title = document.getElementById('title')
+        const newTitle = document.getElementById('newTitle')
+        title.textContent = transaction.title
+        newTitle.value = transaction.title
+
+        const description = document.getElementById('description')
+        description.textContent = transaction.description
+
+        const newDescription = document.getElementById('newDescription')
+        newDescription.value = transaction.description
+
+        const category = await getCategory(transaction.categoryId)
+
+        const currentCategoryTitle = document.getElementById('currentCategoryTitle')
+        currentCategoryTitle.textContent = category.title
+
+        fillCategories(transaction)
+
+        const sum = document.getElementById('sum')
+        sum.textContent = transaction.sum
+
+        const newSum = document.getElementById('newSum')
+        newSum.value = transaction.sum
+
+        const transactionType = await getTransactionType(transaction.transactionType)
+
+        const currentTransactionTypeTitle = document.getElementById('currentTransactionTypeTitle')
+        currentTransactionTypeTitle.textContent = transactionType.title
+
+        fillTransactionTypes(transaction)
+
+        const transactionDate = document.getElementById('transactionDate')
+        transactionDate.textContent = dateFormatter(new Date(transaction.transactionDate))
+
+        const newTransactionDate = document.getElementById('newTransactionDate')
+        newTransactionDate.value = transaction.transactionDate
+      }
+      else
+        alert(`Ошибка HTTP:${response.status}`)
+    }
+
+    async function getCategory(id) {
+      const url = `http://localhost:8080/categories/search/${id}`
+      const response = await fetch(url)
+
+      if (response.ok) {
+        return await response.json()
+      }
+      else
+        alert(`Ошибка HTTP:${response.status}`)
+    }
+
+    async function fillCategories(transaction) {
+      const select = document.getElementById('categories')
+      const categories = await getCategories()
+      select.innerHTML = ''
+      categories.forEach((category) => {
+        select.innerHTML += `<option value="${category.id}" ${category.id === transaction.categoryId ? 'selected' : ''}>${category.title}</option>`
+      })
+    }
+
+    async function getCategories() {
+          const url = "http://localhost:8080/categories/search"
+          const response = await fetch(url)
+
+          if (response.ok)
+            return await response.json()
+          else
+              alert(`Ошибка HTTP:${response.status}`)
+    }
+
+    async function getTransactionType(id) {
+      const url = `http://localhost:8080/transaction-types/search/${id}`
+      const response = await fetch(url)
+
+      if (response.ok) {
+        return await response.json()
+      }
+      else
+        alert(`Ошибка HTTP:${response.status}`)
+    }
+
+    async function fillTransactionTypes(transaction) {
+      const select = document.getElementById('transactionTypes')
+      const transactionTypes = await getTransactionTypes()
+      select.innerHTML = ''
+      transactionTypes.forEach((transactionType) => {
+        select.innerHTML += `<option value="${transactionType.id}" ${transactionType.id === transaction.transactionType ? 'selected' : ''}>${transactionType.title}</option>`
+      })
+    }
+
+    async function getTransactionTypes() {
+          const url = "http://localhost:8080/transaction-types/search"
+          const response = await fetch(url)
+
+          if (response.ok)
+            return await response.json()
+          else
+              alert(`Ошибка HTTP:${response.status}`)
+    }
+
+    function dateFormatter(date) {
+      var day = date.getDate()
+      var month = date.getMonth() + 1
+      var year = date.getFullYear()
+
+      if (day < 10)
+        day = '0' + day
+      if (month < 10)
+        month = '0' + month
+
+        return day + '.' + month + '.' + year
+    }
+
+    async function deleteTransaction() {
+      const url = `http://localhost:8080/transactions/delete/${id}`
+      const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          }
+        })
+        if (response.ok)
+          window.location.href = 'http://localhost:8080/transactions'
+        else
+          alert('Что-то пошло не так....')
+    }
+
+    async function editTransaction() {
+      const url = `http://localhost:8080/transactions/edit/${id}`
+      const responseBody = {
+          id: id,
+          title: document.getElementById('newTitle').value,
+          description: document.getElementById('newDescription').value,
+          categoryId: document.getElementById('categories').value,
+          sum: document.getElementById('newSum').value,
+          transactionType: document.getElementById('transactionTypes').value,
+          transactionDate: document.getElementById('newTransactionDate').value
+        }
+        const response = await fetch(url, {
+          method: 'POST',
+          body: JSON.stringify(responseBody),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          }
+        })
+        if (response.ok)
+          getTransaction()
+        else
+          alert('Что-то пошло не так....')
+    }
+
+    getTransaction()
+</script>
+</html>

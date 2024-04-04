@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Бюджеты</title>
+</head>
+<body>
+<a href="/" id="back">Назад</a>
+<h2>Бюджеты</h2>
+<hr>
+    Поиск по году бюджета: <input type="number" id="year" min="2020" max="2099" step="1"><br>
+    <input type="button" onclick="getBudgets()" value="Поиск">
+<div id="budgets"></div>
+
+<hr>
+<h2>Создание нового бюджета</h2>
+    Год бюджета: <input type="number" id="newYear" min="2020" max="2099" step="1"/><br><br>
+    Сумма бюджета: <input type="number" id="newSum" step="any"><br><br>
+    <input type="button" onclick="createNewBudget()" value="Добавить бюджет">
+</body>
+<script>
+  async function getBudgets() {
+    const url = "http://localhost:8080/budgets/search"
+    const year = document.getElementById('year').value
+    const response = await fetch(year ? url+'?year='+year : url)
+    let budgets = []
+
+    if (response.ok)
+    budgets = await response.json()
+    else
+        alert(`Ошибка HTTP:${response.status}`)
+
+    const div = document.getElementById("budgets")
+    if (!!budgets.length) {
+        div.innerHTML = ''
+        budgets.forEach((budget) => {
+            div.innerHTML += `<b><a href="/budgets/${budget.id}"><p>${budget.year}</p></a></b>`
+        })
+    } else {
+      div.innerHTML = '<h3>Бюджетов нет</h3>'
+    }
+  }
+
+  async function createNewBudget() {
+    const url = "http://localhost:8080/budgets/create"
+    const responseBody = {
+      year: document.getElementById('newYear').value,
+      sum: document.getElementById('newSum').value
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(responseBody),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      }
+    })
+    if (response.ok)
+      getBudgets()
+    else
+      alert('Что-то пошло не так....')
+  }
+
+  getBudgets()
+</script>
+</html>

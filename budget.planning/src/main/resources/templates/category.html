@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Категория бюджета</title>
+</head>
+<body>
+<a href="/categories" id="back">Назад</a>
+    <h2>Категория бюджета</h2>
+<hr>
+<b><span>Название:</span></b>
+<span id="title"></span><br>
+<b><span>Описание:</span></b>
+<span id="description"></span><br>
+<input type="button" onclick="deleteCategory()" value="Удалить">
+<hr>
+<h2>Редактирование категории бюджета</h2>
+    Название категории: <input type="text" id="newTitle"><br><br>
+    Описание категории: <input type="text" id="newDescription"><br><br>
+    <input type="button" onclick="editCategory()" value="Изменить">
+</body>
+<script>
+  const href = window.location.href
+  const index = href.lastIndexOf('/')
+  const id = href.substring(index + 1, href.length)
+
+  async function getCategory() {
+    const url = `http://localhost:8080/categories/search/${id}`
+    const response = await fetch(url)
+    let category = {}
+
+    if (response.ok) {
+      category = await response.json()
+      const title = document.getElementById('title')
+      const description = document.getElementById('description')
+      const newTitle = document.getElementById('newTitle')
+      const newDescription = document.getElementById('newDescription')
+      title.textContent = category.title
+      description.textContent = category.description
+      newTitle.value = category.title
+      newDescription.value = category.description
+    }
+    else
+      alert(`Ошибка HTTP:${response.status}`)
+  }
+
+  async function editCategory() {
+    const url = `http://localhost:8080/categories/edit/${id}`
+    const responseBody = {
+        id: id,
+        title: document.getElementById('newTitle').value,
+        description: document.getElementById('newDescription').value
+      }
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(responseBody),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      })
+      if (response.ok)
+        getCategory()
+      else
+        alert('Что-то пошло не так....')
+  }
+
+  async function deleteCategory() {
+    const url = `http://localhost:8080/categories/delete/${id}`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      })
+      if (response.ok)
+        window.location.href = 'http://localhost:8080/categories'
+      else
+        alert('Что-то пошло не так....')
+  }
+
+  getCategory()
+</script>
+</html>
