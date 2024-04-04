@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class BudgetCategoryController {
     }
 
     @GetMapping("/categories/search")
-    public ResponseEntity<List<BudgetCategory>> categoriesSearch(@RequestParam(name = "title", required = false) String title, Model model) {
+    public ResponseEntity<List<BudgetCategory>> categoriesSearch(@RequestParam(name = "title", required = false) String title) {
         List<BudgetCategory> categories = categoryService.listCategories(title);
         return categories != null && !categories.isEmpty()
                 ? new ResponseEntity<>(categories, HttpStatus.OK)
