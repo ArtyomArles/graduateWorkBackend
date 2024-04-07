@@ -31,11 +31,7 @@ public class BudgetCategoryService {
     }
 
     public void editBudgetCategory(Long id, BudgetCategory editedBudgetCategory) {
-        BudgetCategory category = this.getCategoryById(id);
-        category.setId(editedBudgetCategory.getId());
-        category.setTitle(editedBudgetCategory.getTitle());
-        category.setDescription(editedBudgetCategory.getDescription());
-        this.saveBudgetCategory(category);
+        this.saveBudgetCategory(editedBudgetCategory);
     }
 
 }

@@ -60,10 +60,8 @@
         const newDescription = document.getElementById('newDescription')
         newDescription.value = transaction.description
 
-        const category = await getCategory(transaction.categoryId)
-
         const currentCategoryTitle = document.getElementById('currentCategoryTitle')
-        currentCategoryTitle.textContent = category.title
+        currentCategoryTitle.textContent = transaction.category.title
 
         fillCategories(transaction)
 
@@ -73,10 +71,8 @@
         const newSum = document.getElementById('newSum')
         newSum.value = transaction.sum
 
-        const transactionType = await getTransactionType(transaction.transactionType)
-
         const currentTransactionTypeTitle = document.getElementById('currentTransactionTypeTitle')
-        currentTransactionTypeTitle.textContent = transactionType.title
+        currentTransactionTypeTitle.textContent = transaction.transactionType.title
 
         fillTransactionTypes(transaction)
 
@@ -90,23 +86,12 @@
         alert(`Ошибка HTTP:${response.status}`)
     }
 
-    async function getCategory(id) {
-      const url = `http://localhost:8080/categories/search/${id}`
-      const response = await fetch(url)
-
-      if (response.ok) {
-        return await response.json()
-      }
-      else
-        alert(`Ошибка HTTP:${response.status}`)
-    }
-
     async function fillCategories(transaction) {
       const select = document.getElementById('categories')
       const categories = await getCategories()
       select.innerHTML = ''
       categories.forEach((category) => {
-        select.innerHTML += `<option value="${category.id}" ${category.id === transaction.categoryId ? 'selected' : ''}>${category.title}</option>`
+        select.innerHTML += `<option value="${category.id}" ${category.id === transaction.category.id ? 'selected' : ''}>${category.title}</option>`
       })
     }
 
@@ -120,23 +105,12 @@
               alert(`Ошибка HTTP:${response.status}`)
     }
 
-    async function getTransactionType(id) {
-      const url = `http://localhost:8080/transaction-types/search/${id}`
-      const response = await fetch(url)
-
-      if (response.ok) {
-        return await response.json()
-      }
-      else
-        alert(`Ошибка HTTP:${response.status}`)
-    }
-
     async function fillTransactionTypes(transaction) {
       const select = document.getElementById('transactionTypes')
       const transactionTypes = await getTransactionTypes()
       select.innerHTML = ''
       transactionTypes.forEach((transactionType) => {
-        select.innerHTML += `<option value="${transactionType.id}" ${transactionType.id === transaction.transactionType ? 'selected' : ''}>${transactionType.title}</option>`
+        select.innerHTML += `<option value="${transactionType.id}" ${transactionType.id === transaction.transactionType.id ? 'selected' : ''}>${transactionType.title}</option>`
       })
     }
 
@@ -185,7 +159,7 @@
           description: document.getElementById('newDescription').value,
           categoryId: document.getElementById('categories').value,
           sum: document.getElementById('newSum').value,
-          transactionType: document.getElementById('transactionTypes').value,
+          transactionTypeId: document.getElementById('transactionTypes').value,
           transactionDate: document.getElementById('newTransactionDate').value
         }
         const response = await fetch(url, {

@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.graduate.work.budget.planning.users.role.Role;
+import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategory;
+import ru.graduate.work.budget.planning.web.transactions.types.TransactionType;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name="transactions")
@@ -32,12 +36,24 @@ public class Transaction {
     @Column(name = "sum")
     private BigDecimal sum;
 
-    @Column(name = "transaction_type")
-    private Long transactionType;
+    @Column(name = "transaction_type_id")
+    private Long transactionTypeId;
 
     @Column(name = "transaction_date")
     private Date transactionDate;
 
     @Column(name = "year")
     private int year;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name = "transactions_with_types",
+            joinColumns = {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "transactiontype_id", referencedColumnName = "id")})
+    private TransactionType transactionType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name = "transactions_with_categories",
+            joinColumns = {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id", referencedColumnName = "id")})
+    private BudgetCategory category;
 }
