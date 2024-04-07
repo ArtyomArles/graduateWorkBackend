@@ -16,8 +16,8 @@ import java.util.List;
 public class Budget {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_generator")
-    @SequenceGenerator(name = "id_generator", sequenceName = "budgets_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "budgets_id_generator")
+    @SequenceGenerator(name = "budgets_id_generator", sequenceName = "budgets_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
     @Column(name = "year")

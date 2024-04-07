@@ -15,8 +15,8 @@ import java.sql.Date;
 @NoArgsConstructor
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_generator")
-    @SequenceGenerator(name = "id_generator", sequenceName = "transactions_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactions_id_generator")
+    @SequenceGenerator(name = "transactions_id_generator", sequenceName = "transactions_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
