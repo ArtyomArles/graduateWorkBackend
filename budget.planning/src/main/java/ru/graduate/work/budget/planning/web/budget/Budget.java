@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategory;
 import ru.graduate.work.budget.planning.web.transactions.Transaction;
 
 import java.math.BigDecimal;

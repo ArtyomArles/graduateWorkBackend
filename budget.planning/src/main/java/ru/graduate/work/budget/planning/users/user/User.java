@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import ru.graduate.work.budget.planning.users.role.Role;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -30,7 +30,7 @@ public class User {
     @JoinTable(name = "user_roles",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles;
+    private Set<Role> roles;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;

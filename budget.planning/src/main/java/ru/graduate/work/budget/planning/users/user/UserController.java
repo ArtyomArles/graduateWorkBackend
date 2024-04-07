@@ -3,8 +3,11 @@ package ru.graduate.work.budget.planning.users.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -12,7 +15,18 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String users() {
+        return "users";
+    }
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<User>> getUsers(@RequestParam(name = "login", required = false) String login){
+        List<User> users = userService.findByLogin(login);
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    @GetMapping(value = "/search/{id}")
     public ResponseEntity<User> getUserById(@PathVariable(name = "id") Long id){
         User user = userService.findById(id);
 
@@ -28,6 +42,12 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<?> delete(@RequestBody User user) {
         userService.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<?> save(@RequestBody User user) {
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

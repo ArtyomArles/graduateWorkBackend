@@ -11,7 +11,6 @@ import ru.graduate.work.budget.planning.web.transactions.types.TransactionType;
 import ru.graduate.work.budget.planning.web.transactions.types.TransactionTypeRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

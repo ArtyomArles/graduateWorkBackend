@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+</head>
+<body>
+<a href="/" id="back">Назад</a>
+<h2>Пользователи</h2>
+<hr>
+Поиск по логину: <input type="text" id="login"><br>
+<input type="button" onclick="getUsers()" value="Поиск">
+<div id="users"></div>
+<hr>
+<h2>Создание нового пользователя</h2>
+<!-- Название типа транзакции: <input type="text" id="newTitle" name="title"/><br><br>
+<input type="button" onclick="createNewTransactionType()" value="Создать тип транзакции"> -->
+</body>
+<script>
+    async function getUsers() {
+        const url = "http://localhost:8080/users/search"
+        const login = document.getElementById('login').value
+        const response = await fetch(login ? url+'?login='+login : url)
+        let users = []
+
+        if (response.ok)
+        users = await response.json()
+        else
+            alert(`Ошибка HTTP:${response.status}`)
+
+        const div = document.getElementById("users")
+        if (!!users.length) {
+            div.innerHTML = ''
+            users.forEach((user) => {
+                div.innerHTML += `<b><a href="/users/${user.id}"><p>${user.login}</p></a></b>`
+            })
+        } else {
+          div.innerHTML = '<h3>Типов транзакций нет</h3>'
+        }
+    }
+
+    // async function createNewTransactionType() {
+    //   const url = "http://localhost:8080/transaction-types/create"
+    //   const responseBody = {
+    //     title: document.getElementById('newTitle').value
+    //   }
+    //   const response = await fetch(url, {
+    //     method: 'POST',
+    //     body: JSON.stringify(responseBody),
+    //     headers: {
+    //       'Content-type': 'application/json; charset=UTF-8',
+    //     }
+    //   })
+    //   if (response.ok)
+    //     getTransactionTypes()
+    //   else
+    //     alert('Что-то пошло не так....')
+    // }
+    
+    getUsers()
+</script>
+</html>

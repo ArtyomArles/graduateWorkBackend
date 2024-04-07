@@ -4,13 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.graduate.work.budget.planning.users.role.Role;
 import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategory;
 import ru.graduate.work.budget.planning.web.transactions.types.TransactionType;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.List;
 
 @Entity
 @Table(name="transactions")

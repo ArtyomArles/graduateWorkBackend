@@ -2,14 +2,13 @@ package ru.graduate.work.budget.planning.users.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.graduate.work.budget.planning.users.role.Role;
 import ru.graduate.work.budget.planning.users.role.RoleRepository;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -22,8 +21,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
+    public List<User> findByLogin(String login) {
+        if (login != "" && login != null)
+            return userRepository.findByLogin(login);
+        return userRepository.findAll();
     }
 
     public User findById(Long id) {
@@ -36,7 +37,7 @@ public class UserService {
 
     public void save(User user) {
         Role role = roleRepository.findByName("ROLE_USER");
-        List<Role> roles = new ArrayList<>();
+        Set<Role> roles = new HashSet<>(user.getRoles());
         roles.add(role);
 
         user.setRoles(roles);
