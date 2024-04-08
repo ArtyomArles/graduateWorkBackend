@@ -35,17 +35,20 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        User user = this.findById(id);
+        user.setStatus(Status.DELETED);
+        userRepository.save(user);
     }
 
-    public void save(User user) {
+    public void save(User user, boolean isEdit) {
         Role role = roleRepository.findByName("ROLE_USER");
         Set<Role> roles = new HashSet<>();
         if (user.getRoles() != null) {
             roles.addAll(user.getRoles());
         }
         roles.add(role);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (!isEdit)
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(roles);
         user.setStatus(Status.ACTIVE);
 

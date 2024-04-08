@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователь</title>
+</head>
+<body>
+  <a href="/users" id="back">Назад</a>
+  <h2>Пользователь</h2>
+<hr>
+<b><span>Логин:</span></b>
+<span id="login"></span><br>
+<b><span>Имя:</span></b>
+<span id="firstName"></span><br>
+<b><span>Фамилия:</span></b>
+<span id="lastName"></span><br>
+<b><span>Почта:</span></b>
+<span id="email"></span><br>
+<b><span>Администратор</span></b>
+<input type="checkbox" id="isAdmin"><br>
+<input type="button" onclick="editUser()" value="Сохранить">
+<input type="button" onclick="deleteUser()" value="Удалить">
+<hr>
+</body>
+<script>
+  const href = window.location.href
+  const index = href.lastIndexOf('/')
+  const id = href.substring(index + 1, href.length)
+
+  let user = {}
+
+  async function getUser() {
+    const url = `http://localhost:8080/users/search/${id}`
+    const response = await fetch(url)
+
+    if (response.ok) {
+      user = await response.json()
+      const login = document.getElementById('login')
+      const firstName = document.getElementById('firstName')
+      const lastName = document.getElementById('lastName')
+      const email = document.getElementById('email')
+      const isAdminCheck = document.getElementById("isAdmin")
+      login.textContent = user.login
+      firstName.textContent = user.firstName || 'Имя отсутствует'
+      lastName.textContent = user.lastName || 'Фамилия отсутствует'
+      email.textContent = user.email || 'Почта отсутствует'
+
+      let isAdmin = false
+      user.roles.forEach(role => {
+        if (role.name === 'ROLE_ADMIN')
+          isAdminCheck.checked = true
+      })
+    }
+    else
+      alert(`Ошибка HTTP:${response.status}`)
+  }
+
+  async function deleteUser() {
+    const url = `http://localhost:8080/users/delete/${id}`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      })
+      if (response.ok)
+        window.location.href = 'http://localhost:8080/users'
+      else
+        alert('Что-то пошло не так....')
+  }
+
+  async function editUser() {
+    const url = `http://localhost:8080/users/edit/${id}`
+    const isAdmin = document.getElementById("isAdmin")
+    if (isAdmin.checked) {
+      const role = await getAdminRole()
+      user.roles.push(role)
+    } else {
+      user.roles = user.roles.filter(role => role.name !== 'ROLE_ADMIN')
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: {
+       'Content-type': 'application/json; charset=UTF-8',
+      }
+    }
+    
+  )
+  }
+
+  async function getAdminRole() {
+    const url = "http://localhost:8080/roles/search?name=ROLE_ADMIN"
+    const response = await fetch(url)
+    const role = await response.json()
+    return role
+  }
+
+  getUser()
+</script>
+</html>

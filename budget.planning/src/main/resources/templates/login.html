@@ -113,15 +113,8 @@
           'Content-type': 'application/json; charset=UTF-8',
         }
       })
-      console.log(response.json)
-      if (response.ok)
-        authorization()
-      else
+      if (!response.ok)
         alert('Что-то пошло не так....')
-    }
-
-    function authorization() {
-
     }
 </script>
 </html>

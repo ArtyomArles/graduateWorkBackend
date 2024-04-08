@@ -25,6 +25,10 @@ public class UserController {
         List<User> users = userService.findByLogin(login);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+    @GetMapping("/{id}")
+    public String userInfo(@PathVariable Long id) {
+        return "user";
+    }
     @GetMapping(value = "/search/{id}")
     public ResponseEntity<User> getUserById(@PathVariable(name = "id") Long id){
         User user = userService.findById(id);
@@ -40,15 +44,15 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody User user) {
         if (userService.findByLogin(user.getLogin()).isEmpty()) {
-            userService.save(user);
+            userService.save(user, false);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         return null;
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<User> save(@RequestBody User user) {
-        userService.save(user);
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<User> save(@PathVariable Long id, @RequestBody User user) {
+        userService.save(user, true);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
