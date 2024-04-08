@@ -12,9 +12,6 @@
 <input type="button" onclick="getUsers()" value="Поиск">
 <div id="users"></div>
 <hr>
-<h2>Создание нового пользователя</h2>
-<!-- Название типа транзакции: <input type="text" id="newTitle" name="title"/><br><br>
-<input type="button" onclick="createNewTransactionType()" value="Создать тип транзакции"> -->
 </body>
 <script>
     async function getUsers() {
@@ -38,25 +35,6 @@
           div.innerHTML = '<h3>Типов транзакций нет</h3>'
         }
     }
-
-    // async function createNewTransactionType() {
-    //   const url = "http://localhost:8080/transaction-types/create"
-    //   const responseBody = {
-    //     title: document.getElementById('newTitle').value
-    //   }
-    //   const response = await fetch(url, {
-    //     method: 'POST',
-    //     body: JSON.stringify(responseBody),
-    //     headers: {
-    //       'Content-type': 'application/json; charset=UTF-8',
-    //     }
-    //   })
-    //   if (response.ok)
-    //     getTransactionTypes()
-    //   else
-    //     alert('Что-то пошло не так....')
-    // }
-    
     getUsers()
 </script>
 </html>

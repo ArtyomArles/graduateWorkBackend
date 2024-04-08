@@ -23,30 +23,31 @@ public class UserController {
     @GetMapping(value = "/search")
     public ResponseEntity<List<User>> getUsers(@RequestParam(name = "login", required = false) String login){
         List<User> users = userService.findByLogin(login);
-
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
     @GetMapping(value = "/search/{id}")
     public ResponseEntity<User> getUserById(@PathVariable(name = "id") Long id){
         User user = userService.findById(id);
-
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<User> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> delete(@RequestBody User user) {
-        userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<?> create(@RequestBody User user) {
+        if (userService.findByLogin(user.getLogin()).isEmpty()) {
+            userService.save(user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return null;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody User user) {
+    public ResponseEntity<User> save(@RequestBody User user) {
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
