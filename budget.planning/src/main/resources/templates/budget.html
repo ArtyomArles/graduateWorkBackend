@@ -48,8 +48,7 @@
       transactions.innerHTML = ''
 
       if (budget.transactions.length) {
-        budget.transactions.forEach(async (id) => {
-          transaction = await getTransaction(id)
+        budget.transactions.forEach((transaction) => {
           transactions.innerHTML += 
             `<div style="${style}">
               <b>Название транзакции:</b> <a href="/transactions/${transaction.id}">${transaction.title}</a><br>
@@ -104,18 +103,6 @@
         window.location.href = 'http://localhost:8080/budgets'
       else
         alert('Что-то пошло не так....')
-  }
-
-  async function getTransaction(id) {
-
-    const url = `http://localhost:8080/transactions/search/${id}`
-    const response = await fetch(url)
-
-    if (response.ok) {
-      return await response.json()
-    }
-    else
-      alert(`Ошибка HTTP:${response.status}`)
   }
 
   getBudget()

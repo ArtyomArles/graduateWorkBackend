@@ -11,14 +11,15 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping(value = "/transaction-types")
 public class TransactionTypeController {
     private final TransactionTypeService transactionTypeService;
 
-    @GetMapping("/transaction-types")
+    @GetMapping("")
     public String transactionTypes() {
         return "transaction-types";
     }
-    @GetMapping("/transaction-types/search")
+    @GetMapping("/search")
     public ResponseEntity<List<TransactionType>> transactionTypesSearch(@RequestParam(name = "title", required = false) String title) {
         final List<TransactionType> transactionTypes = transactionTypeService.listTransactionTypes((title));
         return transactionTypes != null && !transactionTypes.isEmpty()
@@ -26,11 +27,11 @@ public class TransactionTypeController {
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
-    @GetMapping("/transaction-types/{id}")
+    @GetMapping("/{id}")
     public String transactionType(@PathVariable Long id) {
         return "transaction-type";
     }
-    @GetMapping("/transaction-types/search/{id}")
+    @GetMapping("/search/{id}")
     public ResponseEntity<TransactionType> transactionTypeInfo(@PathVariable Long id) {
         TransactionType transactionType = transactionTypeService.getTransactionTypeById(id);
         return transactionType != null
@@ -38,19 +39,19 @@ public class TransactionTypeController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/transaction-types/create")
+    @PostMapping("/create")
     public ResponseEntity<?> createTransactionType(@RequestBody TransactionType transactionType) {
         transactionTypeService.saveTransactionType(transactionType);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/transaction-types/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteTransactionType(@PathVariable Long id) {
         transactionTypeService.deleteTransactionType(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/transaction-types/edit/{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<?> editTransactionType(@PathVariable Long id, @RequestBody TransactionType transactionType) {
         transactionTypeService.editTransactionType(id, transactionType);
         return new ResponseEntity<>(HttpStatus.OK);

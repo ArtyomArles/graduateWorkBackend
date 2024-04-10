@@ -3,6 +3,7 @@ package ru.graduate.work.budget.planning.web.budget;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.graduate.work.budget.planning.web.transactions.Transaction;
 import ru.graduate.work.budget.planning.web.transactions.TransactionService;
 
 import java.math.BigDecimal;
@@ -26,11 +27,11 @@ public class BudgetService {
     }
 
     public void saveBudget(Budget budget) {
-        List<Long> transactionsIds = transactionService.getTransactionsByYear(budget.getYear());
-        budget.setTransactions(transactionsIds);
+        List<Transaction> transactions = transactionService.getTransactionsByYear(budget.getYear());
+        budget.setTransactions(transactions);
         BigDecimal balance = budget.getSum();
-        for (Long id: transactionsIds) {
-            balance = balance.add(transactionService.getTransactionById((id)).getSum());
+        for (Transaction transaction: transactions) {
+            balance = balance.add(transactionService.getTransactionById((transaction.getId())).getSum());
         }
         budget.setBalance(balance);
         budgetRepository.save(budget);
@@ -41,11 +42,7 @@ public class BudgetService {
     }
 
     public void editBudget(Long id, Budget editedBudget) {
-        Budget budget = this.getBudgetById(id);
-        budget.setId(editedBudget.getId());
-        budget.setYear(editedBudget.getYear());
-        budget.setSum(editedBudget.getSum());
-        this.saveBudget(budget);
+        this.saveBudget(editedBudget);
     }
 
 }

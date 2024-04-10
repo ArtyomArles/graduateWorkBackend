@@ -19,7 +19,7 @@
     <select id="newCategoryId"></select><br><br>
     Сумма: <input type="number" min="0" id="newSum"><br><br>
     Тип транзакции:
-    <select id="newTransactionType"></select><br><br>
+    <select id="newTransactionTypeId"></select><br><br>
     Дата транзакции: <input type="date" id="newTransactionDate"><br><br>
     <input type="button" onclick="createNewTransaction()" value="Создать транзакцию">
 </body>
@@ -53,7 +53,7 @@
         description: document.getElementById('newDescription').value,
         categoryId: document.getElementById('newCategoryId').value,
         sum: document.getElementById('newSum').value,
-        transactionType: document.getElementById('newTransactionType').value,
+        transactionTypeId: document.getElementById('newTransactionTypeId').value,
         transactionDate: document.getElementById('newTransactionDate').value
       }
       const response = await fetch(url, {
@@ -96,7 +96,7 @@
       else
           alert(`Ошибка HTTP:${response.status}`)
 
-      const select = document.getElementById("newTransactionType")
+      const select = document.getElementById("newTransactionTypeId")
       select.innerHTML = ''
       transactionTypes.forEach((transactionType) => {
         select.innerHTML += `<option value="${transactionType.id}">${transactionType.title}</option>`

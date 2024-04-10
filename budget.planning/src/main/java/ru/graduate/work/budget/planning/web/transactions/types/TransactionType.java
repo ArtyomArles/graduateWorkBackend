@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransactionType {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_generator")
-    @SequenceGenerator(name = "id_generator", sequenceName = "transactiontypes_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactiontypes_id_generator")
+    @SequenceGenerator(name = "transactiontypes_id_generator", sequenceName = "transactiontypes_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

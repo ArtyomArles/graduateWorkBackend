@@ -11,13 +11,14 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping(value = "/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
-    @GetMapping("/transactions")
+    @GetMapping("")
     public String transactions() {
         return "transactions";
     }
-    @GetMapping("/transactions/search")
+    @GetMapping("/search")
     public ResponseEntity<List<Transaction>> transactionsSearch(@RequestParam(name = "title", required = false) String title) {
         final List<Transaction> transactions = transactionService.listTransactions(title);
         return transactions != null && !transactions.isEmpty()
@@ -25,12 +26,12 @@ public class TransactionController {
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
-    @GetMapping("/transactions/{id}")
+    @GetMapping("/{id}")
     public String transaction(@PathVariable Long id) {
         return "transaction";
     }
 
-    @GetMapping("/transactions/search/{id}")
+    @GetMapping("/search/{id}")
     public ResponseEntity<Transaction> transactionInfo(@PathVariable Long id) {
         Transaction transaction = transactionService.getTransactionById(id);
         return transaction != null
@@ -38,19 +39,19 @@ public class TransactionController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/transactions/create")
+    @PostMapping("/create")
     public ResponseEntity<?> createTransaction(@RequestBody Transaction transaction) {
         transactionService.saveTransaction(transaction);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/transactions/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/transactions/edit/{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<?> editTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         transactionService.editTransaction(id, transaction);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -31,9 +31,6 @@ public class TransactionTypeService {
     }
 
     public void editTransactionType(Long id, TransactionType editedTransactionType) {
-        TransactionType transactionType = this.getTransactionTypeById(id);
-        transactionType.setId(editedTransactionType.getId());
-        transactionType.setTitle(editedTransactionType.getTitle());
-        this.saveTransactionType(transactionType);
+        this.saveTransactionType(editedTransactionType);
     }
 }
