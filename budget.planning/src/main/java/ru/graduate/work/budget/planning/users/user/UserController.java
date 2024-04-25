@@ -3,7 +3,6 @@ package ru.graduate.work.budget.planning.users.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,6 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String users() {
         return "users";
     }
