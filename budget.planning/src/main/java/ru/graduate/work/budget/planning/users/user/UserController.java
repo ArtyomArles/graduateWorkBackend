@@ -14,20 +14,12 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("")
-    public String users() {
-        return "users";
-    }
     @GetMapping(value = "/search")
     public ResponseEntity<List<User>> getUsers(@RequestParam(name = "login", required = false) String login){
         List<User> users = userService.findByLogin(login);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-    @GetMapping("/{id}")
-    public String userInfo(@PathVariable Long id) {
-        return "user";
-    }
-    @GetMapping(value = "/search/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUserById(@PathVariable(name = "id") Long id){
         User user = userService.findById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -48,8 +40,8 @@ public class UserController {
         return null;
     }
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<User> save(@PathVariable Long id, @RequestBody User user) {
+    @PostMapping("/edit")
+    public ResponseEntity<User> save(@RequestBody User user) {
         userService.save(user, true);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

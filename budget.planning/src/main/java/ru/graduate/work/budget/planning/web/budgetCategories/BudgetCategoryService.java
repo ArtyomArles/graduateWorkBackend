@@ -2,6 +2,7 @@ package ru.graduate.work.budget.planning.web.budgetCategories;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class BudgetCategoryService {
 
     public List<BudgetCategory> listCategories(String title) {
         if (title != "" && title != null)
-            return categoryRepository.findByTitle(title);
-        return categoryRepository.findAll();
+            return categoryRepository.findByTitle(title, Sort.by("id").descending());
+        return categoryRepository.findAll(Sort.by("id").descending());
     }
 
     public BudgetCategory getCategoryById(Long id) {
@@ -30,7 +31,7 @@ public class BudgetCategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public void editBudgetCategory(Long id, BudgetCategory editedBudgetCategory) {
+    public void editBudgetCategory(BudgetCategory editedBudgetCategory) {
         this.saveBudgetCategory(editedBudgetCategory);
     }
 

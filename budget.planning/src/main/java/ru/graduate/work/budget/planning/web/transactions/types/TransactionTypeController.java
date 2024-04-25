@@ -15,7 +15,6 @@ import java.util.List;
 public class TransactionTypeController {
     private final TransactionTypeService transactionTypeService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/search")
     public ResponseEntity<List<TransactionType>> transactionTypesSearch(@RequestParam(name = "title", required = false) String title) {
         final List<TransactionType> transactionTypes = transactionTypeService.listTransactionTypes((title));
@@ -32,24 +31,21 @@ public class TransactionTypeController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create")
     public ResponseEntity<?> createTransactionType(@RequestBody TransactionType transactionType) {
         transactionTypeService.saveTransactionType(transactionType);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(transactionType, HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteTransactionType(@PathVariable Long id) {
         transactionTypeService.deleteTransactionType(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/edit")
     public ResponseEntity<?> editTransactionType(@RequestBody TransactionType transactionType) {
         transactionTypeService.editTransactionType(transactionType);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(transactionType, HttpStatus.OK);
     }
 }

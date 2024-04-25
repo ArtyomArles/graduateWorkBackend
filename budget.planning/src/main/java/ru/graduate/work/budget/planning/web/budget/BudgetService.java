@@ -2,6 +2,7 @@ package ru.graduate.work.budget.planning.web.budget;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.graduate.work.budget.planning.web.transactions.Transaction;
 import ru.graduate.work.budget.planning.web.transactions.TransactionService;
@@ -18,8 +19,8 @@ public class BudgetService {
 
     public List<Budget> listBudgets(Integer year) {
         if (year != null)
-            return budgetRepository.findByYear(year);
-        return budgetRepository.findAll();
+            return budgetRepository.findByYear(year, Sort.by("id").descending());
+        return budgetRepository.findAll(Sort.by("id").descending());
     }
 
     public Budget getBudgetById(Long id) {
@@ -41,7 +42,7 @@ public class BudgetService {
         budgetRepository.deleteById(id);
     }
 
-    public void editBudget(Long id, Budget editedBudget) {
+    public void editBudget(Budget editedBudget) {
         this.saveBudget(editedBudget);
     }
 
