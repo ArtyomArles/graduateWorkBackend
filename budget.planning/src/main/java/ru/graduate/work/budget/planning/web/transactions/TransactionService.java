@@ -8,6 +8,8 @@ import ru.graduate.work.budget.planning.web.budget.Budget;
 import ru.graduate.work.budget.planning.web.budget.BudgetRepository;
 import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategory;
 import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategoryRepository;
+import ru.graduate.work.budget.planning.web.currency.Currency;
+import ru.graduate.work.budget.planning.web.currency.CurrencyRepository;
 import ru.graduate.work.budget.planning.web.transactions.types.TransactionType;
 import ru.graduate.work.budget.planning.web.transactions.types.TransactionTypeRepository;
 
@@ -21,6 +23,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionTypeRepository transactionTypeRepository;
     private final BudgetCategoryRepository budgetCategoryRepository;
+    private final CurrencyRepository currencyRepository;
     private final BudgetRepository budgetRepository;
     public List<Transaction> listTransactions(String title) {
         if (title != "" && title != null)
@@ -35,9 +38,11 @@ public class TransactionService {
     public void saveTransaction(Transaction transaction) {
         TransactionType transactionType = transactionTypeRepository.findById(transaction.getTransactionTypeId()).orElse(null);
         BudgetCategory budgetCategory = budgetCategoryRepository.findById(transaction.getCategoryId()).orElse(null);
+        Currency currency = currencyRepository.findById(transaction.getCurrencyId()).orElse(null);
 
         transaction.setTransactionType(transactionType);
         transaction.setCategory(budgetCategory);
+        transaction.setCurrency(currency);
         transaction.setYear(transaction.getTransactionDate().getYear() + 1900);
         transactionRepository.save(transaction);
         updateBudgets();
@@ -51,7 +56,8 @@ public class TransactionService {
             BigDecimal balance = budget.getSum();
 
             for (Transaction _transaction: transactions) {
-                balance = balance.add(this.getTransactionById((_transaction.getId())).getSum());
+                Currency currency = currencyRepository.findById(_transaction.getCurrencyId()).orElse(null);
+                balance = balance.add(this.getTransactionById((_transaction.getId())).getSum().multiply(currency.getCurrencyRate()));
             }
 
             budget.setBalance(balance);

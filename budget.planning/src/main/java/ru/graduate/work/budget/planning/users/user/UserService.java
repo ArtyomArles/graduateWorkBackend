@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public void save(User user, boolean isEdit) {
-        Role role = roleRepository.findByName("ROLE_USER", Sort.by("id").descending());
+        Role role = roleRepository.findByName("ROLE_USER", Sort.by("id").descending()).get(0);
         Set<Role> roles = new HashSet<>();
         if (user.getRoles() != null) {
             roles.addAll(user.getRoles());
