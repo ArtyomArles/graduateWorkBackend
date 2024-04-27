@@ -15,11 +15,6 @@ import java.util.List;
 public class BudgetCategoryController {
     private final BudgetCategoryService categoryService;
 
-    @GetMapping("")
-    public String categories() {
-        return "categories";
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<BudgetCategory>> categoriesSearch(@RequestParam(name = "title", required = false) String title) {
         List<BudgetCategory> categories = categoryService.listCategories(title);
@@ -29,11 +24,6 @@ public class BudgetCategoryController {
     }
 
     @GetMapping("/{id}")
-    public String category(@PathVariable Long id) {
-        return "category";
-    }
-
-    @GetMapping("/search/{id}")
     public ResponseEntity<BudgetCategory> categoryInfo(@PathVariable Long id) {
         BudgetCategory budgetCategory = categoryService.getCategoryById(id);
         return budgetCategory != null
@@ -44,18 +34,18 @@ public class BudgetCategoryController {
     @PostMapping("/create")
     public ResponseEntity<?> createCategory(@RequestBody BudgetCategory category) {
         categoryService.saveBudgetCategory(category);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         categoryService.deleteBudgetCategory(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<?> editCategory(@PathVariable Long id, @RequestBody BudgetCategory category) {
-        categoryService.editBudgetCategory(id, category);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/edit")
+    public ResponseEntity<?> editCategory(@RequestBody BudgetCategory category) {
+        categoryService.editBudgetCategory(category);
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 }

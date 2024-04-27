@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -15,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RoleController {
     private final RoleService roleService;
     @GetMapping("/search")
-    public ResponseEntity<Role> roleInfo(@RequestParam(name = "name", required = false) String name) {
-        Role role = roleService.findByName(name);
-        return new ResponseEntity<>(role, HttpStatus.OK);
+    public ResponseEntity<List<Role>> roleInfo(@RequestParam(name = "name", required = false) String name) {
+        List<Role> roles = roleService.findByName(name);
+        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 }

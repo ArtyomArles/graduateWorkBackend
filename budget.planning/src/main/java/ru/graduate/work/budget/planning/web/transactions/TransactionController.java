@@ -14,10 +14,6 @@ import java.util.List;
 @RequestMapping(value = "/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
-    @GetMapping("")
-    public String transactions() {
-        return "transactions";
-    }
     @GetMapping("/search")
     public ResponseEntity<List<Transaction>> transactionsSearch(@RequestParam(name = "title", required = false) String title) {
         final List<Transaction> transactions = transactionService.listTransactions(title);
@@ -27,11 +23,6 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public String transaction(@PathVariable Long id) {
-        return "transaction";
-    }
-
-    @GetMapping("/search/{id}")
     public ResponseEntity<Transaction> transactionInfo(@PathVariable Long id) {
         Transaction transaction = transactionService.getTransactionById(id);
         return transaction != null
@@ -42,18 +33,18 @@ public class TransactionController {
     @PostMapping("/create")
     public ResponseEntity<?> createTransaction(@RequestBody Transaction transaction) {
         transactionService.saveTransaction(transaction);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<?> editTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
-        transactionService.editTransaction(id, transaction);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/edit")
+    public ResponseEntity<?> editTransaction(@RequestBody Transaction transaction) {
+        transactionService.editTransaction(transaction);
+        return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 }

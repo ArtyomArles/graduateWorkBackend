@@ -15,11 +15,6 @@ import java.util.List;
 public class BudgetController {
     private final BudgetService budgetService;
 
-    @GetMapping("")
-    public String budgets() {
-        return "budgets";
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<Budget>> budgetsSearch(@RequestParam(name = "year", required = false) Integer year) {
         List<Budget> budgets = budgetService.listBudgets(year);
@@ -28,14 +23,9 @@ public class BudgetController {
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public String budget(@PathVariable Long id) {
-        return "budget";
-    }
-
-    @GetMapping("/search/{id}")
-    public ResponseEntity<Budget> budgetInfo(@PathVariable Long id) {
-        Budget budget = budgetService.getBudgetById(id);
+    @GetMapping("/{year}")
+    public ResponseEntity<Budget> budgetByYear(@PathVariable Integer year) {
+        Budget budget = budgetService.getBudgetByYear(year).get(0);
         return budget != null
                 ? new ResponseEntity<>(budget, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -45,18 +35,18 @@ public class BudgetController {
     public ResponseEntity<?> createBudget(@RequestBody Budget budget) {
         budget.setBalance(budget.getSum());
         budgetService.saveBudget(budget);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(budget, HttpStatus.CREATED);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteBudget(@PathVariable Long id) {
         budgetService.deleteBudget(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<?> editCategory(@PathVariable Long id, @RequestBody Budget budget) {
-        budgetService.editBudget(id, budget);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/edit")
+    public ResponseEntity<?> editCategory(@RequestBody Budget budget) {
+        budgetService.editBudget(budget);
+        return new ResponseEntity<>(budget, HttpStatus.OK);
     }
 }

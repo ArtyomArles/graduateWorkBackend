@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.graduate.work.budget.planning.web.budgetCategories.BudgetCategory;
+import ru.graduate.work.budget.planning.web.currency.Currency;
 import ru.graduate.work.budget.planning.web.transactions.types.TransactionType;
 
 import java.math.BigDecimal;
@@ -54,4 +55,12 @@ public class Transaction {
             joinColumns = {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id", referencedColumnName = "id")})
     private BudgetCategory category;
+
+    @Column(name = "currency_id")
+    private Long currencyId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name = "transactions_with_currencies",
+            joinColumns = {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "currency_id", referencedColumnName = "id")})
+    private Currency currency;
 }

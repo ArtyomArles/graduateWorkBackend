@@ -2,6 +2,7 @@ package ru.graduate.work.budget.planning.web.transactions.types;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class TransactionTypeService {
 
     public List<TransactionType> listTransactionTypes(String title) {
         if (title != "" && title != null)
-            return transactionTypeRepository.findByTitle(title);
-        return transactionTypeRepository.findAll();
+            return transactionTypeRepository.findByTitle(title, Sort.by("id").descending());
+        return transactionTypeRepository.findAll(Sort.by("id").descending());
     }
 
     public TransactionType getTransactionTypeById(Long id) {
@@ -30,7 +31,7 @@ public class TransactionTypeService {
         transactionTypeRepository.deleteById(id);
     }
 
-    public void editTransactionType(Long id, TransactionType editedTransactionType) {
+    public void editTransactionType(TransactionType editedTransactionType) {
         this.saveTransactionType(editedTransactionType);
     }
 }
