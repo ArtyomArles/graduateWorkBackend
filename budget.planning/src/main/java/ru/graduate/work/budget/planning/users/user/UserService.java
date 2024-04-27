@@ -3,7 +3,6 @@ package ru.graduate.work.budget.planning.users.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.graduate.work.budget.planning.users.role.Role;
 import ru.graduate.work.budget.planning.users.role.RoleRepository;
@@ -19,16 +18,15 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     public List<User> getAll() {
         return userRepository.findAll(Sort.by("id").descending()).stream().filter(user -> user.getStatus() != Status.DELETED).collect(Collectors.toList());
     }
 
-    public List<User> findByLogin(String login) {
+    public User findByLogin(String login) {
         if (login != "" && login != null)
-            return userRepository.findByLogin(login, Sort.by("id").descending()).stream().filter(user -> user.getStatus() != Status.DELETED).collect(Collectors.toList());
-        return this.getAll();
+            return userRepository.findByLogin(login);
+        return null;
     }
 
     public User findById(Long id) {
@@ -41,15 +39,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void save(User user, boolean isEdit) {
+    public void save(User user) {
         Role role = roleRepository.findByName("ROLE_USER", Sort.by("id").descending()).get(0);
         Set<Role> roles = new HashSet<>();
         if (user.getRoles() != null) {
             roles.addAll(user.getRoles());
         }
         roles.add(role);
-        if (!isEdit)
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(roles);
         user.setStatus(Status.ACTIVE);
 

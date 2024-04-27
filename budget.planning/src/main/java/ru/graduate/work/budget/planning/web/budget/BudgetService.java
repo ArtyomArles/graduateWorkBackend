@@ -19,10 +19,13 @@ public class BudgetService {
 
     public List<Budget> listBudgets(Integer year) {
         if (year != null)
-            return budgetRepository.findByYear(year, Sort.by("id").descending());
+            return budgetRepository.findByYear(year);
         return budgetRepository.findAll(Sort.by("id").descending());
     }
 
+    public List<Budget> getBudgetByYear(Integer year) {
+        return budgetRepository.findByYear(year);
+    }
     public Budget getBudgetById(Long id) {
         return budgetRepository.findById(id).orElse(null);
     }

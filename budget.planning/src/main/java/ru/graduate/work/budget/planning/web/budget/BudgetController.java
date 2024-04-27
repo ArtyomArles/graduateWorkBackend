@@ -23,9 +23,9 @@ public class BudgetController {
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Budget> budgetInfo(@PathVariable Long id) {
-        Budget budget = budgetService.getBudgetById(id);
+    @GetMapping("/{year}")
+    public ResponseEntity<Budget> budgetByYear(@PathVariable Integer year) {
+        Budget budget = budgetService.getBudgetByYear(year).get(0);
         return budget != null
                 ? new ResponseEntity<>(budget, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -15,8 +16,14 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping(value = "/search")
-    public ResponseEntity<List<User>> getUsers(@RequestParam(name = "login", required = false) String login){
-        List<User> users = userService.findByLogin(login);
+    public ResponseEntity<List<User>> getUsers(@RequestParam(name = "login", required = false) String login) {
+        List<User> users = new ArrayList<>();
+        if (login != "" && login != null) {
+            User user = userService.findByLogin(login);
+            users.add(user);
+        } else {
+            users = userService.getAll();
+        }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
     @GetMapping(value = "/{id}")
@@ -33,8 +40,8 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody User user) {
-        if (userService.findByLogin(user.getLogin()).isEmpty()) {
-            userService.save(user, false);
+        if (userService.findByLogin(user.getLogin()) == null) {
+            userService.save(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         return null;
@@ -42,7 +49,7 @@ public class UserController {
 
     @PostMapping("/edit")
     public ResponseEntity<User> save(@RequestBody User user) {
-        userService.save(user, true);
+        userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
